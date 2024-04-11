@@ -25,6 +25,7 @@ logging.basicConfig(filename='test.log', level=logging.DEBUG,
                     format='%(asctime)s:%(levelname)s:%(message)s:%(lineno)d')
 
 
+
 def add(x, y):
     """Add Function"""
     return x + y
@@ -48,6 +49,38 @@ def divide(x, y):
 num_1 = 20
 num_2 = 10
 
+"""
+creating a new logger instead of the default root logger
+setting the level for the new logger to INFO
+creating a file handler for the new logger
+adding the file handler to the new logger
+creating a log formatter for the new logger
+adding the formatter to the file handler
+"""
+new_logger = logging.getLogger(__name__)
+new_logger.setLevel(logging.INFO)
+
+file_handler = logging.FileHandler('new_test.log')
+new_logger.addHandler(file_handler)
+
+formatter = logging.Formatter('%(asctime)s:%(levelname)s:%(message)s:%(lineno)d')
+file_handler.setFormatter(formatter)
+
+
+"""using the new logger"""
+add_result = add(num_1, num_2)
+new_logger.info('Add: {} + {} = {}'.format(num_1, num_2, add_result))
+
+sub_result = subtract(num_1, num_2)
+new_logger.info('Sub: {} - {} = {}'.format(num_1, num_2, sub_result))
+
+mul_result = multiply(num_1, num_2)
+new_logger.info('Mul: {} * {} = {}'.format(num_1, num_2, mul_result))
+
+div_result = divide(num_1, num_2)
+new_logger.info('Div: {} / {} = {}'.format(num_1, num_2, div_result))
+
+""" logging tests for the default root logger
 add_result = add(num_1, num_2)
 logging.debug('Add: {} + {} = {}'.format(num_1, num_2, add_result))
 
@@ -59,3 +92,4 @@ logging.debug('Mul: {} * {} = {}'.format(num_1, num_2, mul_result))
 
 div_result = divide(num_1, num_2)
 logging.debug('Div: {} / {} = {}'.format(num_1, num_2, div_result))
+"""
