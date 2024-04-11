@@ -7,6 +7,8 @@ Contains a script that returns a log message obfuscated
 import logging
 import re
 from typing import List
+import mysql.connector
+from os import environ
 
 
 def filter_datum(fields: List[str], redaction: str,
@@ -55,3 +57,19 @@ def get_logger() -> logging.Logger:
     stream.setFormatter(RedactingFormatter(fields=PII_FIELDS))
     logger.addHandler(stream)
     return logger
+
+
+def get_db() -> mysql.connector.connection.MySQLConnection:
+    """
+    Returns a connector to a database
+    """
+    username = environ.get('PERSONAL_DATA_DB_USERNAME', 'root')
+    password = environ.get('PERSONAL_DATA_DB_PASSWORD', '')
+    db_name = environ.get('PERSONAL_DATA_DB_NAME')
+    host = environ.get('PERSONAL_DATA_DB_HOST')
+
+    conn = mysql.connector.connection.MySQLConnection(user=username,
+                                                      password=password,
+                                                      host=host,
+                                                      database=db_name)
+    return conn
