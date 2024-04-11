@@ -56,6 +56,11 @@ creating a file handler for the new logger
 adding the file handler to the new logger
 creating a log formatter for the new logger
 adding the formatter to the file handler
+
+creating another handler for the new logger
+for displaying log data to the console
+adding the handler to the new logger
+setting a formatter for the stream handler
 """
 new_logger = logging.getLogger(__name__)
 new_logger.setLevel(logging.INFO)
@@ -66,6 +71,9 @@ new_logger.addHandler(file_handler)
 formatter = logging.Formatter('%(asctime)s:%(levelname)s:%(message)s:%(lineno)d')
 file_handler.setFormatter(formatter)
 
+stream_handler = logging.StreamHandler()
+new_logger.addHandler(stream_handler)
+stream_handler.setFormatter(formatter)
 
 """using the new logger"""
 add_result = add(num_1, num_2)
