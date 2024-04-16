@@ -1,6 +1,8 @@
 # ignore test files
-*main
+main_*.py
 
+# ignore more test files
+*main.py
 
 # ignore pyc
 *.pyc
