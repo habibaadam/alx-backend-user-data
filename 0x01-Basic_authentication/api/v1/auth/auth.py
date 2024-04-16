@@ -14,17 +14,14 @@ class Auth:
         if not path or not excluded_paths:
             return True
 
-        # Normalize path to ensure consistent trailing slash
-        normalized_path = path.rstrip('/') + '/'
+        if not path.endswith('/'):
+            path += '/'
 
-        # Check if the path matches any of the excluded paths
         for excluded_path in excluded_paths:
-            # Normalize excluded path to ensure consistent trailing slash
-            normalized_excluded_path = excluded_path.rstrip('/') + '/'
-            if normalized_excluded_path.endswith('*'):
-                if normalized_path.startswith(normalized_excluded_path[:-1]):
+            if excluded_path.endswith('*'):
+                if path.startswith(excluded_path[:-1]):
                     return False
-            elif normalized_path == normalized_excluded_path:
+            elif path == excluded_path:
                 return False
 
         return True
