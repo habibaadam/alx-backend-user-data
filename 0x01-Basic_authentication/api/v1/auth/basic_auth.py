@@ -11,7 +11,6 @@ from models.user import User
 
 class BasicAuth(Auth):
     """class for authentication set up"""
-
     def extract_base64_authorization_header(self,
                                             authorization_header: str) -> str:
         """extracts the base64 part
