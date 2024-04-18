@@ -30,23 +30,27 @@ else:
 @app.before_request
 def before_request():
     """ method of filtering that is triggered before each request"""
-    if auth is None:
-        return
-    if not auth.require_auth(request.path, ['/api/v1/status/',
-                                            '/api/v1/unauthorized/',
-                                            '/api/v1/forbidden/',
-                                            '/api/v1/auth_session/login/']):
-        return
-    if not auth.authorization_header(request):
-        abort(401)
-    
+    get_header = auth.authorization_header(request)
+    get_user = auth.current_user(request)
     request.current_user = auth.current_user(request)
-    if not auth.current_user(request):
-        abort(403)
-    if auth.authorization_header(request) and  \
-            auth.session_cookie(request) is None:
-        abort(401)
 
+    if auth is None:
+        pass
+    no_auth_list = ['/api/v1/status/', '/api/v1/unauthorized/',
+                    '/api/v1/forbidden/', '/api/v1/auth_session/login/']
+    check = auth.require_auth(request.path, no_auth_list)
+
+    if not check:
+        pass
+    else:
+        if not get_header:
+            abort(401)
+        if not get_user:
+            abort(403)
+    if auth.authorization_header(request) and \
+            auth.session_cookie(request):
+        abort(401)
+        return None
 
 
 @app.errorhandler(404)
