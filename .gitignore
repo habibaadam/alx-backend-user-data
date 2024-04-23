@@ -12,3 +12,6 @@ __pycache__/
 
 # ignore logged data
 *.log
+
+# db
+a.db
