@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 """DB module
 """
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, tuple_
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.exc import InvalidRequestError, NoResultFound
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session
 
 from user import Base, User
-from typing import Dict, List
+from typing import Dict, List, Tuple
 
 
 class DB:
@@ -39,12 +39,19 @@ class DB:
         self._session.commit()
         return new_user
 
-    def find_user_by(self, **search_me) -> User:
+    def find_user_by(self, **kwargs) -> User:
+        """Finds a user based on a set of filters.
         """
-        Filters a new user according to a keyword"""
-        if not search_me:
-            raise InvalidRequestError
-        result = self._session.query(User).filter_by(**search_me).first()
-        if not result:
-            raise NoResultFound
+        fields, values = [], []
+        for key, value in kwargs.items():
+            if hasattr(User, key):
+                fields.append(getattr(User, key))
+                values.append(value)
+            else:
+                raise InvalidRequestError()
+        result = self._session.query(User).filter(
+            tuple_(*fields).in_([tuple(values)])
+        ).first()
+        if result is None:
+            raise NoResultFound()
         return result
