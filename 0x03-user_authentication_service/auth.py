@@ -33,6 +33,7 @@ class Auth:
         """authenticates a user by email and password"""
         try:
             user = self._db.find_user_by(email=email)
-            return bcrypt.checkpw(password.encode(), user.hashed_password)
+            hashed_password = user.hashed_password
+            return bcrypt.checkpw(password.encode(), hashed_password)
         except NoResultFound:
             return False
