@@ -61,7 +61,7 @@ class DB:
             raise NoResultFound()
         return result
 
-    def update_user(self, user_id: int, **kwargs):
+    def update_user(self, user_id: int, **kwargs) -> None:
         """updates user by ids and a given attribute"""
         user = self.find_user_by(id=user_id)
         if user is None:
@@ -73,4 +73,3 @@ class DB:
             else:
                 raise ValueError()
         self._session.commit()
-        return None
