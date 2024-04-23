@@ -59,13 +59,13 @@ class Auth:
 
     def create_session(self, email: str) -> str:
         """creates a session for each user"""
-        new_user = None
+        user = None
         try:
-            new_user = self._db.find_user_by(email=email)
+            user = self._db.find_user_by(email=email)
         except NoResultFound:
             return None
-        if new_user is None:
+        if user is None:
             return None
         session_id = _generate_uuid()
-        self._db.update_user(new_user.id, session_id=session_id)
+        self._db.update_user(user.id, session_id=session_id)
         return session_id
