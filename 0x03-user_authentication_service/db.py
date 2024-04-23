@@ -64,9 +64,12 @@ class DB:
     def update_user(self, user_id: int, **kwargs):
         """updates user by ids and a given attribute"""
         user = self.find_user_by(id=user_id)
+        if user is None:
+            return
+        updated_info = {}
         for key, value in kwargs.items():
             if hasattr(user, key):
-                setattr(user, key, value)
+                updated_info[getattr(user, key)] = value
             else:
                 raise ValueError()
         self._session.commit()
