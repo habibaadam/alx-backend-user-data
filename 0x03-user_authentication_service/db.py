@@ -39,12 +39,12 @@ class DB:
         self._session.commit()
         return new_user
 
-    def find_user_by(self, **kwargs: Dict) -> User:
-        """finds a user by a given attribute"""
-        try:
-            user = self._session.query(User).filter_by(**kwargs).first()
-        except InvalidRequestError:
+    def find_user_by(self, **search_me) -> User:
+        """
+        Filters a new user according to a keyword"""
+        if not search_me:
             raise InvalidRequestError
-        if user is None:
+        result = self._session.query(User).filter_by(**search_me).first()
+        if not result:
             raise NoResultFound
-        return user
+        return result
