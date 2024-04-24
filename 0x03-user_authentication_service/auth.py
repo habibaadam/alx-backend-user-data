@@ -58,14 +58,18 @@ class Auth:
         return False
 
     def create_session(self, email: str) -> str:
-        """creates a session for each user"""
+        """Creates a new session for a user.
+        """
+        user = None
         try:
             user = self._db.find_user_by(email=email)
-            session_id = _generate_uuid()
-            self._db.update_user(user_id=user.id, session_id=session_id)
-            return session_id
         except NoResultFound:
             return None
+        if user is None:
+            return None
+        session_id = _generate_uuid()
+        self._db.update_user(user.id, session_id=session_id)
+        return session_id
 
     def get_user_from_session_id(self, session_id: str) -> Union[User, None]:
         """Retrieves a user based on a given session ID.
@@ -79,8 +83,23 @@ class Auth:
             return None
         return user
 
-    def destroy_session(self, user_id: str) -> None:
-        """destroys a session based on a user"""
+    def destroy_session(self, user_id: int) -> None:
+        """Destroys a session associated with a given user.
+        """
         if user_id is None:
             return None
-        self._db.update_user(user_id=user_id, session_id=None)
+        self._db.update_user(user_id, session_id=None)
+
+    def get_reset_password_token(self, email: str) -> str:
+        """Generates a password reset token for a user.
+        """
+        user = None
+        try:
+            user = self._db.find_user_by(email=email)
+        except NoResultFound:
+            user = None
+        if user is None:
+            raise ValueError()
+        reset_token = _generate_uuid()
+        self._db.update_user(user.id, reset_token=reset_token)
+        return reset_token
